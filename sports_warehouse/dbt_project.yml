@@ -1,0 +1,29 @@
+name: 'sports_warehouse'
+version: '1.0.0'
+
+profile: 'sports_warehouse'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  sports_warehouse:
+    staging:
+      statcast:
+        +schema: staging_statcast
+        +materialized: view
+    intermediate:
+      +schema: intermediate
+      +materialized: view
+    marts:
+      baseball:
+        +schema: marts_baseball
+        +materialized: table

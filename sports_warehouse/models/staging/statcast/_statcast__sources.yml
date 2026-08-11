@@ -1,0 +1,16 @@
+version: 2
+
+sources:
+  - name: statcast
+    database: bronze_lakehouse
+    schema: dbo
+    description: >
+      Raw pitch-by-pitch Statcast data from Baseball Savant,
+      loaded via pybaseball into the Fabric Lakehouse.
+      All columns stored as strings in bronze — staging handles type casting.
+    tables:
+      - name: pitches
+        description: >
+          One row per pitch thrown in an MLB game. Contains pitch
+          characteristics, batted ball metrics, game context, and
+          player identifiers (MLBAM IDs).

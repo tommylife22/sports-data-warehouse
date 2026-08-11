@@ -1,0 +1,83 @@
+version: 2
+
+models:
+
+  - name: fct_pitches
+    description: >
+      Pitch-level fact table. One row per pitch thrown in a regular
+      season MLB game. Contains pitch characteristics, batted ball
+      metrics, pitch location, and outcome flags.
+    columns:
+      - name: pitch_key
+        description: Surrogate key — game_id + at_bat_number + pitch_number.
+        data_tests:
+          - unique
+          - not_null
+      - name: batter_id
+        description: MLBAM player ID for the batter. FK to dim_players.
+        data_tests:
+          - relationships:
+              arguments:I want
+                to: ref('dim_players')
+                field: player_id
+      - name: pitcher_id
+        description: MLBAM player ID for the pitcher. FK to dim_players.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_players')
+                field: player_id
+      - name: pitch_type_code
+        description: Pitch type code. FK to dim_pitch_types.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_pitch_types')
+                field: pitch_type_code
+
+  - name: fct_at_bats
+    description: >
+      Plate-appearance-level fact table. One row per at-bat.
+      Aggregates pitch counts, batted ball metrics, and outcome flags.
+    columns:
+      - name: at_bat_key
+        description: Surrogate key — game_id + at_bat_number + batter_id + pitcher_id
+        data_tests:
+          - unique
+          - not_null
+      - name: batter_id
+        description: MLBAM player ID. FK to dim_players.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_players')
+                field: player_id
+      - name: pitcher_id
+        description: MLBAM player ID. FK to dim_players.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_players')
+                field: player_id
+  - name: dim_players
+    description: >
+      Player dimension. One row per MLBAM player ID. Stub built
+      from Statcast data only — enrich with Chadwick register and
+      MLB Stats API when those sources are added.
+    columns:
+      - name: player_id
+        description: MLBAM player identifier.
+        data_tests:
+          - unique
+          - not_null
+
+  - name: dim_pitch_types
+    description: >
+      Pitch type reference dimension. Maps pitch type codes to
+      full names and categories (Fastball, Breaking, Offspeed).
+    columns:
+      - name: pitch_type_code
+        description: Abbreviated pitch type code (FF, SL, CH, etc.).
+        data_tests:
+          - unique
+          - not_null
