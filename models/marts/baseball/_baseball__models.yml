@@ -17,7 +17,7 @@ models:
         description: MLBAM player ID for the batter. FK to dim_players.
         data_tests:
           - relationships:
-              arguments:I want
+              arguments:
                 to: ref('dim_players')
                 field: player_id
       - name: pitcher_id
